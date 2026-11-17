@@ -62,6 +62,8 @@ out tags center;
 
 def discover(client: Client) -> list[tuple[Trail, tuple[float, float] | None]]:
     """Every PR/PRC/PL/GR hiking relation in Portugal, with its centre. Raises when no endpoint answers."""
+    if not config.OVERPASS_URLS:
+        raise RuntimeError("disabled (TRAILS_OVERPASS_URLS=off)")
     last: Exception | None = None
     for url in config.OVERPASS_URLS:
         try:

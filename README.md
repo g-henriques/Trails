@@ -6,6 +6,10 @@ tipo de traçado, entidade promotora, ligação oficial, **mapa do percurso e GP
 
 ![Mapa](docs/screenshots/mapa.png)
 
+| Distritos | Trilho |
+| --- | --- |
+| ![Distritos](docs/screenshots/distritos.png) | ![Trilho](docs/screenshots/trilho.png) |
+
 ## Como funciona
 
 A app recolhe e junta os dados sozinha, uma vez por semana (e no primeiro arranque):
