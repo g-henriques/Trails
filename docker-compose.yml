@@ -1,0 +1,25 @@
+# Trilhos de Portugal on the QNAP NAS (Container Station). Copy .env.example to .env first.
+# Step-by-step guide: docs/instalacao-nas.md.
+services:
+  app:
+    # Built from this checkout by default; NAS_IMAGE=ghcr.io/g-henriques/trails:latest pulls the CI image.
+    image: ${NAS_IMAGE:-trails:local}
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - TZ=${TZ:-Europe/Lisbon}
+      - TRAILS_DB=/data/trails.db
+    ports:
+      # Host port from the NAS inventory; bind to the NAS LAN IP. Right side = port inside the container.
+      - "${NAS_BIND_IP:-0.0.0.0}:${NAS_PORT:-8092}:8080"
+    volumes:
+      - ${NAS_DATA_DIR:-./data}:/data
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    mem_limit: 512m
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }

@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements-dev.txt
+      - run: ruff check .
+      - run: pytest -q
+      - name: Shell scripts
+        run: sh -n deploy/*.sh
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: docker build -t trails:ci .
+      - name: Smoke test
+        run: |
+          mkdir -p data && sudo chown 10001:10001 data
+          docker run -d --name trails -p 8080:8080 -e TRAILS_SCRAPE_INTERVAL_HOURS=0 -v "$PWD/data:/data" trails:ci
+          for i in $(seq 1 30); do curl -fsS http://127.0.0.1:8080/healthz && break; sleep 1; done
+          curl -fsS http://127.0.0.1:8080/ | grep -q "Trilhos de Portugal"
+          curl -fsS http://127.0.0.1:8080/api/districts | grep -q Aveiro
+          docker logs trails
+
+  publish:
+    needs: [test, docker]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - id: meta
+        uses: docker/metadata-action@v5
+        with:
+          # lowercase: GHCR rejects upper-case names (e.g. a repo called My-App)
+          images: ghcr.io/${{ github.repository_owner }}/trails
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=sha,format=short
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          # amd64 for Intel/AMD QNAP, arm64 for ARM QNAP
+          platforms: linux/amd64,linux/arm64
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
