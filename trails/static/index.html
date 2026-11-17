@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trilhos de Portugal</title>
+  <meta name="description" content="Percursos pedestres homologados de Portugal: mapa, distritos, distância, dificuldade, duração e GPX.">
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/vendor/leaflet/leaflet.css">
+  <link rel="stylesheet" href="/static/vendor/leaflet/MarkerCluster.css">
+  <link rel="stylesheet" href="/static/vendor/leaflet/MarkerCluster.Default.css">
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#/">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20 9.5 8l4 7 2.5-4L21 20z"/></svg>
+      <span>Trilhos de Portugal</span>
+    </a>
+    <nav class="tabs">
+      <a href="#/" data-tab="map">Mapa</a>
+      <a href="#/distritos" data-tab="districts">Distritos</a>
+    </nav>
+    <div class="status" id="status" title="Estado dos dados">…</div>
+  </header>
+
+  <main id="view-map" class="view view-map">
+    <aside class="sidebar">
+      <form class="filters" id="filters" autocomplete="off">
+        <input type="search" name="q" placeholder="Procurar nome, referência ou concelho…" aria-label="Procurar">
+        <div class="row">
+          <select name="d" aria-label="Distrito"><option value="">Todos os distritos</option></select>
+          <select name="k" aria-label="Tipo de percurso">
+            <option value="">PR, PL e GR</option>
+            <option value="PR">Pequena Rota (PR)</option>
+            <option value="GR">Grande Rota (GR)</option>
+            <option value="PL">Percurso Local (PL)</option>
+          </select>
+        </div>
+        <div class="chips" id="difficulty-chips" role="group" aria-label="Dificuldade"></div>
+        <div class="row">
+          <select name="km" aria-label="Distância">
+            <option value="">Qualquer distância</option>
+            <option value="0-5">Até 5 km</option>
+            <option value="5-10">5 – 10 km</option>
+            <option value="10-15">10 – 15 km</option>
+            <option value="15-25">15 – 25 km</option>
+            <option value="25-">Mais de 25 km</option>
+          </select>
+          <select name="t" aria-label="Traçado">
+            <option value="">Circular ou linear</option>
+            <option value="Circular">Circular</option>
+            <option value="Linear">Linear</option>
+          </select>
+        </div>
+        <label class="check"><input type="checkbox" name="gpx" value="1"> Só trilhos com GPX</label>
+      </form>
+      <div class="list-head"><span id="count">…</span><button type="button" class="link" id="reset">Limpar filtros</button></div>
+      <ol class="trail-list" id="list"></ol>
+    </aside>
+    <section class="map-wrap">
+      <div id="map" class="map"></div>
+      <div class="legend" id="legend"></div>
+    </section>
+  </main>
+
+  <main id="view-districts" class="view view-districts" hidden>
+    <div class="districts-layout">
+      <div id="district-map" class="map district-map"></div>
+      <div class="district-grid" id="district-grid"></div>
+    </div>
+  </main>
+
+  <main id="view-trail" class="view view-trail" hidden>
+    <article class="trail" id="trail"></article>
+  </main>
+
+  <footer class="footer">
+    Dados: <a href="https://pt.wikipedia.org/wiki/Lista_de_percursos_pedestres_de_pequena_rota_em_Portugal" target="_blank" rel="noopener">Wikipédia</a> (CC BY-SA),
+    <a href="https://wiki.openstreetmap.org/wiki/Portugal/Percursos_Pedestres" target="_blank" rel="noopener">OpenStreetMap Wiki</a> e
+    traçados © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">contribuidores do OpenStreetMap</a> (ODbL).
+    Homologação: <a href="https://fcmportugal.com/percursos-pedestres/" target="_blank" rel="noopener">FCMP</a>.
+    Valores marcados com ≈ são estimativas.
+  </footer>
+
+  <script src="/static/vendor/leaflet/leaflet.js"></script>
+  <script src="/static/vendor/leaflet/leaflet.markercluster.js"></script>
+  <script src="/static/app.js"></script>
+</body>
+</html>
