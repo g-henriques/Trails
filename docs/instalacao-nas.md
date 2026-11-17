@@ -10,8 +10,8 @@ do GitHub e backups diários. A app fica acessível só na rede local.
 | ------------------ | ----------------------------------------------------------------------------- |
 | `192.168.1.50`     | IP fixo da NAS                                                                |
 | `/share/Container` | Pasta partilhada `Container` (criada pelo Container Station)                  |
-| **`8092`**      | Porta do Trilhos de Portugal no browser → **`http://192.168.1.50:8092`**                 |
-| 8080, 8088, 8090, 8091 | Portas já usadas por outras apps da NAS (inventário da skill). **Não as use.** |
+| **`8094`**      | Porta do Trilhos de Portugal no browser → **`http://192.168.1.50:8094`**                 |
+| 8080, 8088, 8090, 8091, 8092 | Portas já usadas por outras apps da NAS (inventário da skill). **Não as use.** |
 
 ## O que vai ficar instalado
 
@@ -29,10 +29,10 @@ do GitHub e backups diários. A app fica acessível só na rede local.
 
 - Container Station em execução e SSH ativo (**Painel de controlo → Rede e Serviços de Ficheiros → Telnet / SSH**).
 - `ssh admin@192.168.1.50`. Na QTS 5.1+, no menu "Console Management" escreva `Q` e depois `Y`.
-- Confirme que a porta está livre (não pode aparecer nenhuma linha com `:8092`):
+- Confirme que a porta está livre (não pode aparecer nenhuma linha com `:8094`):
 
   ```sh
-  netstat -tln | grep -E ':(8092) '
+  netstat -tln | grep -E ':(8094) '
   ```
 
 ## 2. Descarregar o código
@@ -82,7 +82,7 @@ linha Unix (LF).
 
 | Variável              | Valor                                        | Explicação                                                    |
 | --------------------- | -------------------------------------------- | ------------------------------------------------------------- |
-| `NAS_PORT`            | `8092`                                    | Porta no browser.                                             |
+| `NAS_PORT`            | `8094`                                    | Porta no browser.                                             |
 | `NAS_BIND_IP`         | `192.168.1.50`                               | IP fixo da NAS: a app não fica disponível noutras interfaces. |
 | `NAS_SSH_KEY`         | `/share/Container/trails-ssh/id_ed25519`      | Só para repositórios privados.                                |
 | `NAS_IMAGE`           | `trails:local`                                | Construir na NAS, ou `ghcr.io/…` (modo GHCR, passo 7).        |
@@ -101,17 +101,17 @@ cd /share/Container/trails
 ```
 
 Constrói a imagem, prepara a pasta de dados, arranca e espera até a app responder. Termina com
-`trails … is up: http://192.168.1.50:8092`. Os contentores voltam a arrancar sozinhos depois de um reinício da NAS.
+`trails … is up: http://192.168.1.50:8094`. Os contentores voltam a arrancar sozinhos depois de um reinício da NAS.
 Não altere a configuração no Container Station: altere o `.env` e corra `docker compose up -d`.
 
 ## 5. Verificar
 
 ```sh
 docker compose ps                                  # running (healthy)
-wget -qO- http://192.168.1.50:8092/healthz      # resposta do health check
+wget -qO- http://192.168.1.50:8094/healthz      # resposta do health check
 ```
 
-No browser: **`http://192.168.1.50:8092`**.
+No browser: **`http://192.168.1.50:8094`**.
 
 ### A primeira recolha de trilhos
 
@@ -184,7 +184,7 @@ antes da atualização e `docker compose up -d --build` (modo GHCR: `NAS_IMAGE=�
 
 ## 10. Rede
 
-Não crie port forwarding no router para a `8092` e desligue o UPnP (e a configuração automática do router no
+Não crie port forwarding no router para a `8094` e desligue o UPnP (e a configuração automática do router no
 myQNAPcloud). O QuFirewall pode não filtrar portas publicadas por contentores: é o `NAS_BIND_IP` que limita a app à
 rede local. Para acesso remoto, use uma VPN (QVPN, WireGuard, Tailscale).
 
@@ -202,7 +202,7 @@ rede local. Para acesso remoto, use uma VPN (QVPN, WireGuard, Tailscale).
 | "Ainda não há trilhos" no site                   | A 1.ª recolha arranca uns segundos depois do arranque. Veja o progresso no topo do site ou em `docker compose logs -f app`. |
 | Muitos trilhos "sem GPX"                         | Só há traçado para os trilhos que já estão desenhados no OpenStreetMap. Confirme também que a NAS chega a `overpass-api.de` (`docker compose logs app \| grep -i overpass`): é o que encontra a maioria dos traçados. |
 | `Overpass discovery skipped` nos logs            | Os servidores Overpass estavam em baixo ou lentos; a lista e os traçados já conhecidos continuam a funcionar e a próxima recolha volta a tentar. Pode forçar uma no botão **Atualizar**. |
-| A recolha falha sempre                           | A app precisa de Internet (Wikipédia, wiki.openstreetmap.org, api.openstreetmap.org, overpass-api.de). Veja o erro em `http://192.168.1.50:8092/api/status`. |
+| A recolha falha sempre                           | A app precisa de Internet (Wikipédia, wiki.openstreetmap.org, api.openstreetmap.org, overpass-api.de). Veja o erro em `http://192.168.1.50:8094/api/status`. |
 
 ## 12. Desinstalar
 

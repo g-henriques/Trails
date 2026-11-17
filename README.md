@@ -29,14 +29,14 @@ Dados: Wikipédia (CC BY-SA) e OpenStreetMap (ODbL) — a atribuição aparece n
 
 ## Instalar na NAS
 
-Guia passo a passo: **[docs/instalacao-nas.md](docs/instalacao-nas.md)** (porta 8092, atualização e backup
+Guia passo a passo: **[docs/instalacao-nas.md](docs/instalacao-nas.md)** (porta 8094, atualização e backup
 automáticos).
 
 ## Desenvolvimento
 
 ```sh
 pip install -r requirements-dev.txt
-TRAILS_DB=./data/trails.db uvicorn trails.main:app --reload --port 8092   # http://localhost:8092
+TRAILS_DB=./data/trails.db uvicorn trails.main:app --reload --port 8094   # http://localhost:8094
 pytest -q && ruff check .
 ```
 

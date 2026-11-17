@@ -12,7 +12,7 @@ services:
       - TRAILS_DB=/data/trails.db
     ports:
       # Host port from the NAS inventory; bind to the NAS LAN IP. Right side = port inside the container.
-      - "${NAS_BIND_IP:-0.0.0.0}:${NAS_PORT:-8092}:8080"
+      - "${NAS_BIND_IP:-0.0.0.0}:${NAS_PORT:-8094}:8080"
     volumes:
       - ${NAS_DATA_DIR:-./data}:/data
     read_only: true
